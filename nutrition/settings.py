@@ -24,7 +24,7 @@ env = environ.Env(
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(
-    env_file=os.path.join(BASE_DIR,'.env')
+    env_file=os.path.join(BASE_DIR, '.env')
 )
 
 # Quick-start development settings - unsuitable for production
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'history',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +92,6 @@ DATABASES = {
 }
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -128,10 +128,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static'
 ]
 
 # Default primary key field type
@@ -139,4 +139,5 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/files/'  # 업로드하는 과정을 처리하는 url지정.
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads') # 현재 프로젝트 경로에 uploads 폴더를 생성하여 이곳에 업로드한 파일을 저장하겠다는 것.
+# 현재 프로젝트 경로에 uploads 폴더를 생성하여 이곳에 업로드한 파일을 저장하겠다는 것.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
