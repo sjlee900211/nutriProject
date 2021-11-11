@@ -1,10 +1,11 @@
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, UserManager
+from django.db.models import Q
 
 class User(models.Model):
+    objects = UserManager()
     """ Custom User Model """
 
     GENDER_MALE = 1
@@ -39,12 +40,12 @@ class User(models.Model):
 
 
     user_id = models.CharField(max_length=20, unique=True, primary_key=True)
-    n_code = models.ForeignKey("Standard", on_delete=models.CASCADE, to_field='n_code')
+    codename = models.ForeignKey("Standard", on_delete=models.CASCADE, db_column='n_code')
     password = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     height = models.FloatField(blank=False)
     weight = models.FloatField(blank=False)
-    age_category = models.CharField(choices=AGE_CHOICES, max_length=50)
+    age_category = models.IntegerField(choices=AGE_CHOICES)
     gender = models.IntegerField(choices=GENDER_CHOICES)
     activity = models.FloatField(choices=ACTIVITY_CHOISES)
     proper_cal = models.FloatField(blank=True)
@@ -52,7 +53,21 @@ class User(models.Model):
     update_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name, self.gender, self.height, self.weight}'
+
+    def save(self, *args, **kwargs):
+        age = self.age_category
+        gender = self.gender
+        code = Standard.objects.n_code.filter(Q(gender=gender))
+        if code:
+            self.codename = code
+        super().save(*args, **kwargs)
+
+    # def save2(self, *args, **kwargs):
+    #     height = self.height
+    #     weight = self.weight
+    #     self.proper_cal = 66.47+(13.75*weight)+(5*height)-(6.76*30)
+    #     super().save(*args,**kwargs)
 
     class Meta:
         db_table = 'users'
@@ -68,9 +83,9 @@ class Standard(models.Model):
         (GENDER_FEMALE, 'Female'),
     )
 
-    AGE_1929 = '19~29'
-    AGE_3049 = '30~49'
-    AGE_5064 = '50~64'
+    AGE_1929 = 1929
+    AGE_3049 = 3049
+    AGE_5064 = 5064
 
     AGE_CHOICES = (
         (AGE_1929, '19~29'),
@@ -78,7 +93,7 @@ class Standard(models.Model):
         (AGE_5064, '50~64'),
     )
     n_code = models.CharField(max_length=50, unique=True, primary_key=True)
-    age_category = models.CharField(choices=AGE_CHOICES, max_length=50)
+    age_category = models.IntegerField(choices=AGE_CHOICES, max_length=50)
     carb = models.FloatField(blank=True)
     prot = models.FloatField(blank=True)
     fat = models.FloatField(blank=True)
@@ -90,3 +105,5 @@ class Standard(models.Model):
 
     class Meta:
         db_table = 'nutri_standard'
+
+

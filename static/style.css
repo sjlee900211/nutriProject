@@ -1,7 +1,8 @@
 /* Components */
 @import "components/nav-bar.css";
 @import "components/upload.css";
-@import "components/test.css";
+@import "components/signup.css";
+
 
 
 * {

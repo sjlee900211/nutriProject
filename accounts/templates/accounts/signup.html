@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+    <div class="create-form">
+        <h4>Sing Up</h4>
+        <form action="{% url 'accounts:signup' %}" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input type="submit" class="btn btn-primary rounded-pill col-12 mt-4 mb-4">
+        </form>
+    </div>
+
+{% endblock %}
