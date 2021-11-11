@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'history',
     'bootstrap4',
 ]
 
@@ -138,6 +137,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MEDIA_URL = '/files/'  # 업로드하는 과정을 처리하는 url지정.
+MEDIA_URL = '/food_img/'  # 업로드하는 과정을 처리하는 url지정.
 # 현재 프로젝트 경로에 uploads 폴더를 생성하여 이곳에 업로드한 파일을 저장하겠다는 것.
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'food_img')
+
+# LOGIN_REDIRECT_URL = reverse_lazy('accounts:main')
+# LOGOUT_REDIRECT_URL = reverse_lazy('accounts:main')

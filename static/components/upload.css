@@ -1,0 +1,109 @@
+
+.main-text {
+  margin: 20px;
+}
+.main-text h4 {
+  color: grey;
+}
+
+section {
+  margin: 50px 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.img-container{
+  height: 500px;
+  width: 450px;
+}
+
+.img-container .wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  border: 2px solid grey;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.wrapper .image {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper .image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.wrapper .file-icon {
+  font-size: 100px;
+  color: #0b5ed7;
+}
+
+.wrapper .file-inner_text {
+  font-size: 20px;
+  font-weight: 500;
+  color: #0b5ed7;
+}
+
+.wrapper #img-cancle {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-size: 20px;
+  color: #0b5ed7;
+  display: none;
+  cursor: pointer;
+}
+
+.wrapper.active:hover #img-cancle {
+  display: block;
+}
+
+.wrapper #img-cancle:hover {
+  color: tomato;
+}
+
+.wrapper #img-name {
+  position: absolute;
+  bottom: 0;
+  background: grey;
+  color: white;
+  width: 100%;
+  padding: 6px 0;
+  font-size: 18px;
+  display: none;
+}
+
+.wrapper.active:hover #img-name {
+  display: block;
+}
+
+.wrapper.active {
+  border: none;
+}
+
+.img-container #custom-btn {
+  margin-top: 30px;
+  width: 100%;
+  display: block;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 18px;
+  text-transform: uppercase;
+  cursor: pointer;
+}

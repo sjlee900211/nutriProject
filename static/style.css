@@ -1,5 +1,28 @@
+/* Components */
+@import "components/nav-bar.css";
+@import "components/upload.css";
+@import "components/test.css";
+
+
 * {
-  margin: 0 auto;
-  color: tomato;
-  font-family: "Open Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", sans-serif;
+}
+
+body {
+    margin: 0 auto;
+}
+
+footer {
+    border-top: 1px solid lightgray;
+}
+
+footer.footer {
+    padding: 2rem 5rem;
+}
+.fa-instagram,
+.fa-twitter,
+.fa-github {
+    color: gray;
 }

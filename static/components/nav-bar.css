@@ -1,0 +1,24 @@
+nav {
+    border-bottom: 1px solid lightgray;
+}
+.navbar-brand {
+    font-weight: bold;
+}
+.navbar-nav {
+    text-align: center;
+}
+
+.navbar .navbar-nav .nav-item .nav-link,
+footer{
+    /*font-weight: bold;*/
+}
+
+.nav-signup {
+    margin-left: 10px;
+}
+
+
+
+
+
+
