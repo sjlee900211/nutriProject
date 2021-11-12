@@ -46,7 +46,7 @@ class User(models.Model):
     GENDER_FEMALE = 2
     GENDER_CHOICES = (
         (GENDER_MALE, 'Male'),
-        (GENDER_FEMALE, 'Femail'),
+        (GENDER_FEMALE, 'Female'),
     )
 
     AGE_1929 = 1929
@@ -72,10 +72,9 @@ class User(models.Model):
         (ACTIVITY_5, '활동량 아주 많다.(매일 2번 운동)'),
     )
 
-
-    user_id = models.CharField(max_length=20, unique=True, primary_key=True)
-    n_code = models.ForeignKey("Standard", on_delete=models.CASCADE)
-    password = models.CharField(max_length=50)
+    user_id = models.CharField(max_length=20, unique=True, null=False)
+    n_code = models.ForeignKey('Standard', on_delete=models.CASCADE, blank=True, null=True)
+    password = models.CharField(max_length=200)
     name = models.CharField(max_length=50)
     height = models.FloatField(blank=False)
     weight = models.FloatField(blank=False)
@@ -87,7 +86,7 @@ class User(models.Model):
     update_dt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.name, self.gender, self.height, self.weight}'
+        return f'{self.n_code, self.user_id, self.gender, self.proper_cal}'
 
     # def save(self, *args, **kwargs):
     #     gender = self.gender
