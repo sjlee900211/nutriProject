@@ -13,9 +13,11 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 from . import forms
 from accounts.models import User, Standard
+from django.views.decorators.csrf import csrf_exempt
 
 def main(request):
     return render(request, 'accounts/main.html')
+
 
 class SignUpView(FormView):
     template_name = "accounts/signup.html"
@@ -25,24 +27,25 @@ class SignUpView(FormView):
     # def post(self,request):
     #     if request.method == "POST":
     #         parent_name = request.POST.get('post')
-    #
+    #         #parent_name = user
     #         node_parent = None
     #     if parent_name is not None:
     #         node_parent = Node.objects.get(name=parent_name)
-    #
+    
     #     Node.objects.create(parent=node_parent)
-
     def form_valid(self, form):
-        gender = form.data.get('gender')
-        weight = form.data.get('weight')
-        height = form.data.get('weight')
-        code = Standard.objects.get(gender=gender).n_code
-        user = User (
-            n_code=code,
-            proper_cal=float(66.47 + (13.75 * float(weight)) + (5 * float(height)) - (6.76 * 30)),
-        )
-        # print(user)
-        user.save()
+        # age_category = form.data.get('age_category')
+        # weight = form.data.get('weight')
+        # height = form.data.get('weight')
+        # code = Standard.objects.get(age_category=age_category)
+        # print(code)
+        # user = User (
+        #     n_code=code,
+        #     proper_cal=float(66.47 + (13.75 * float(weight)) + (5 * float(height)) - (6.76 * 30)),
+        # )
+        # # print(user)
+        # user.save()
+        print(form)
         form.save()
         user_id = form.cleaned_data.get('user_id')
         password = form.cleaned_data.get('password')
@@ -53,10 +56,9 @@ class SignUpView(FormView):
 
 
 
-    # def post(self, request):
-    #     if request.method == "POST":
-    #         temp = request.POST.get('n_code')
-    #         print(temp)
+        # if request.method == "POST":
+        #     temp = request.POST.get('n_code')
+        #     print(temp)
     #     try:
     #         data = json.loads(request.body)
     #         user_id = data['user_id']

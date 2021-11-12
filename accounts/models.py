@@ -4,6 +4,40 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, UserManager
 from django.db.models import Q
 
+class Standard(models.Model):
+    """ Custom User Model """
+
+    GENDER_MALE = 1
+    GENDER_FEMALE = 2
+
+    GENDER_CHOICES = (
+        (GENDER_MALE, 'Male'),
+        (GENDER_FEMALE, 'Female'),
+    )
+
+    AGE_1929 = 1929
+    AGE_3049 = 3049
+    AGE_5064 = 5064
+
+    AGE_CHOICES = (
+        (AGE_1929, '19~29'),
+        (AGE_3049, '30~49'),
+        (AGE_5064, '50~64'),
+    )
+    n_code = models.CharField(max_length=50, unique=True)
+    age_category = models.IntegerField(choices=AGE_CHOICES)
+    carb = models.FloatField(blank=True)
+    prot = models.FloatField(blank=True)
+    fat = models.FloatField(blank=True)
+    sodium = models.FloatField(blank=True)
+    gender = models.IntegerField(choices=GENDER_CHOICES)
+
+    def __str__(self):
+        return f'{self.n_code}'
+
+    class Meta:
+        db_table = 'nutri_standard'
+
 class User(models.Model):
     objects = UserManager()
     """ Custom User Model """
@@ -40,7 +74,7 @@ class User(models.Model):
 
 
     user_id = models.CharField(max_length=20, unique=True, primary_key=True)
-    n_code = models.ForeignKey("Standard", on_delete=models.CASCADE, db_column='n_code')
+    n_code = models.ForeignKey("Standard", on_delete=models.CASCADE)
     password = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     height = models.FloatField(blank=False)
@@ -55,13 +89,13 @@ class User(models.Model):
     def __str__(self):
         return f'{self.name, self.gender, self.height, self.weight}'
 
-    def save(self, *args, **kwargs):
-        gender = self.gender
-        code = Standard.objects.get(gender=gender)
-        self.n_code = code.n_code
-        # if codename:
-        #     self.codename = codename
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     gender = self.gender
+    #     code = Standard.objects.get(gender=gender)
+    #     self.n_code = code.n_code
+    #     # if codename:
+    #     #     self.codename = codename
+    #     super().save(*args, **kwargs)
 
     # def save2(self, *args, **kwargs):
     #     height = self.height
@@ -72,38 +106,6 @@ class User(models.Model):
     class Meta:
         db_table = 'users'
 
-class Standard(models.Model):
-    """ Custom User Model """
 
-    GENDER_MALE = 1
-    GENDER_FEMALE = 2
-
-    GENDER_CHOICES = (
-        (GENDER_MALE, 'Male'),
-        (GENDER_FEMALE, 'Female'),
-    )
-
-    AGE_1929 = 1929
-    AGE_3049 = 3049
-    AGE_5064 = 5064
-
-    AGE_CHOICES = (
-        (AGE_1929, '19~29'),
-        (AGE_3049, '30~49'),
-        (AGE_5064, '50~64'),
-    )
-    n_code = models.CharField(max_length=50, unique=True, primary_key=True)
-    age_category = models.IntegerField(choices=AGE_CHOICES)
-    carb = models.FloatField(blank=True)
-    prot = models.FloatField(blank=True)
-    fat = models.FloatField(blank=True)
-    sodium = models.FloatField(blank=True)
-    gender = models.IntegerField(choices=GENDER_CHOICES)
-
-    def __str__(self):
-        return f'{self.n_code}'
-
-    class Meta:
-        db_table = 'nutri_standard'
 
 
