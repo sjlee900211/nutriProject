@@ -1,5 +1,4 @@
 import json
-
 import bcrypt as bcrypt
 import generics as generics
 from django.contrib.auth import authenticate, login
@@ -18,22 +17,42 @@ from accounts.models import User, Standard
 def main(request):
     return render(request, 'accounts/main.html')
 
-
 class SignUpView(FormView):
-    model = User, Standard
     template_name = "accounts/signup.html"
     form_class = forms.SignUpForm
     success_url = reverse_lazy("accounts:main")
 
-    # def form_valid(self, form):
-    #     form.save()
-    #     user_id = form.cleaned_data.get("user_id")
-    #     password = form.cleaned_data.get("password")
-    #     user = authenticate(self.request, user_id=user_id, password=password)
-    #     if user is not None:
-    #         login(self.request, user)
-    #     return super().form_valid(form)
+    # def post(self,request):
+    #     if request.method == "POST":
+    #         parent_name = request.POST.get('post')
     #
+    #         node_parent = None
+    #     if parent_name is not None:
+    #         node_parent = Node.objects.get(name=parent_name)
+    #
+    #     Node.objects.create(parent=node_parent)
+
+    def form_valid(self, form):
+        gender = form.data.get('gender')
+        weight = form.data.get('weight')
+        height = form.data.get('weight')
+        code = Standard.objects.get(gender=gender).n_code
+        user = User (
+            n_code=code,
+            proper_cal=float(66.47 + (13.75 * float(weight)) + (5 * float(height)) - (6.76 * 30)),
+        )
+        # print(user)
+        user.save()
+        form.save()
+        user_id = form.cleaned_data.get('user_id')
+        password = form.cleaned_data.get('password')
+        user = authenticate(self.request, user_id=user_id, password=password)
+        if user is not None:
+            login(self.request, user)
+        return super().form_valid(form)
+
+
+
     # def post(self, request):
     #     if request.method == "POST":
     #         temp = request.POST.get('n_code')
@@ -60,7 +79,7 @@ class SignUpView(FormView):
     #             gender=gender,
     #             codename=Standard.objects.n_code.filter(Q(gender=gender)),
     #             proper_cal=66.47 + (13.75 * weight) + (5 * height) - (6.76 * 30),
-    #         )
+    # #         )
     #         print(user)
     #         return JsonResponse({'MESSAGE': 'SUCCESS TO MAKE ACCOUNT'}, status=201)
     #

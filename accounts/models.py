@@ -40,7 +40,7 @@ class User(models.Model):
 
 
     user_id = models.CharField(max_length=20, unique=True, primary_key=True)
-    codename = models.ForeignKey("Standard", on_delete=models.CASCADE, db_column='n_code')
+    n_code = models.ForeignKey("Standard", on_delete=models.CASCADE, db_column='n_code')
     password = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     height = models.FloatField(blank=False)
@@ -56,11 +56,11 @@ class User(models.Model):
         return f'{self.name, self.gender, self.height, self.weight}'
 
     def save(self, *args, **kwargs):
-        age = self.age_category
         gender = self.gender
-        code = Standard.objects.n_code.filter(Q(gender=gender))
-        if code:
-            self.codename = code
+        code = Standard.objects.get(gender=gender)
+        self.n_code = code.n_code
+        # if codename:
+        #     self.codename = codename
         super().save(*args, **kwargs)
 
     # def save2(self, *args, **kwargs):
@@ -93,7 +93,7 @@ class Standard(models.Model):
         (AGE_5064, '50~64'),
     )
     n_code = models.CharField(max_length=50, unique=True, primary_key=True)
-    age_category = models.IntegerField(choices=AGE_CHOICES, max_length=50)
+    age_category = models.IntegerField(choices=AGE_CHOICES)
     carb = models.FloatField(blank=True)
     prot = models.FloatField(blank=True)
     fat = models.FloatField(blank=True)

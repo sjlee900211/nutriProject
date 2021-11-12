@@ -22,4 +22,12 @@ class SignUpForm(forms.ModelForm):
             raise forms.ValidationError("Password Confirmation does not match")
 
         else:
-            return password
+            return password1
+
+    def save(self, *args, **kwargs):
+        user = super().save(commit=False)
+        user_id = self.cleaned_data.get('user_id')
+        password = self.cleaned_data.get('password')
+        user.user_id = user_id
+        user.password = password
+        user.save()
