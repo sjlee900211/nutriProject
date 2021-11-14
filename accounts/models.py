@@ -1,7 +1,9 @@
+import hashlib
+
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, UserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, UserManager, User, PermissionsMixin
 from django.db.models import Q
 
 class Standard(models.Model):
@@ -32,14 +34,62 @@ class Standard(models.Model):
     sodium = models.FloatField(blank=True)
     gender = models.IntegerField(choices=GENDER_CHOICES)
 
-    def __str__(self):
-        return f'{self.n_code}'
-
     class Meta:
         db_table = 'nutri_standard'
 
-class User(models.Model):
-    objects = UserManager()
+    def __str__(self):
+        return f'{self.n_code}'
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, user_id, password, **extra_fields):
+        if not user_id:
+            raise ValueError('The given user_id must be set')
+
+        user_id = self.user_id
+        user = self.model(user_id=user_id, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, user_id, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(user_id, password, **extra_fields)
+
+    def create_superuser(self, user_id, password, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(user_id, password, **extra_fields)
+
+
+# class UserManager(BaseUserManager):
+#     def create_user(self, user_id, password=None):
+#         if not user_id:
+#             raise ValueError('Users must have an ID')
+#
+#         user = self.model(
+#             user_id=user_id,
+#         )
+#
+#         user.set_password(password)
+#         user.save(using=self._db)
+#         return user
+#
+#     def create_superuser(self, user_id, password):
+#         user = self.create_user(
+#             user_id=user_id,
+#             password=password,
+#         )
+#         user.is_admin = True
+#         user.save(using=self._db)
+#         return user
+
+class User(AbstractBaseUser, PermissionsMixin):
     """ Custom User Model """
 
     GENDER_MALE = 1
@@ -74,7 +124,6 @@ class User(models.Model):
 
     user_id = models.CharField(max_length=20, unique=True, null=False)
     n_code = models.ForeignKey('Standard', on_delete=models.CASCADE, blank=True, null=True)
-    password = models.CharField(max_length=200)
     name = models.CharField(max_length=50)
     height = models.FloatField(blank=False)
     weight = models.FloatField(blank=False)
@@ -83,7 +132,20 @@ class User(models.Model):
     activity = models.FloatField(choices=ACTIVITY_CHOISES)
     proper_cal = models.FloatField(blank=True)
     create_dt = models.DateTimeField(auto_now_add=True)
-    update_dt = models.DateTimeField(auto_now=True)
+
+    objects = UserManager()
+    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'user_id'
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def is_staff(self):
+        return self.is_admin
 
     def __str__(self):
         return f'{self.n_code, self.user_id, self.gender, self.proper_cal}'

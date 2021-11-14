@@ -1,7 +1,27 @@
 from django import forms
+from django.contrib.auth.hashers import check_password
+
 from . import models
 from .models import User
 
+class LoginForm(forms.Form):
+
+    user_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "ID"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
+
+    def clean(self):
+        user_id = self.cleaned_data.get("user_id")
+        password = self.cleaned_data.get("password")
+        print(user_id,password)
+        try:
+            user = models.User.objects.get(user_id=user_id)
+            print(user.password)
+            if check_password(password,user.password):
+                return self.cleaned_data
+            else:
+                self.add_error("password", forms.ValidationError("Password is wrong"))
+        except models.User.DoesNotExist:
+            self.add_error("email", forms.ValidationError("User does not exist"))
 
 class SignUpForm(forms.ModelForm):
     class Meta:

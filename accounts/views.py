@@ -1,26 +1,37 @@
-import json
-import bcrypt as bcrypt
-import generics as generics
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Q
-from django.forms import forms
-from django.http import HttpResponse, JsonResponse
+
+from audioop import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 from django.shortcuts import render, redirect
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 from . import forms
-from accounts.models import User, Standard
-from django.views.decorators.csrf import csrf_exempt
-
-from .forms import SignUpForm
 
 
 def main(request):
     return render(request, 'accounts/main.html')
 
+class LoginView(FormView):
+
+    template_name = "accounts/login.html"
+    form_class = forms.LoginForm
+    success_url = reverse_lazy("accounts:main")
+
+    def form_valid(self, form):
+        user_id = form.cleaned_data.get("user_id")
+        password = form.cleaned_data.get("password")
+        user = authenticate(self.request, user_id=user_id, password=password)
+        if user is not None:
+            login(self.request, user)
+        return super().form_valid(form)
+
+
+def log_out(request):
+    messages.info(request, "See you later")
+    logout(request)
+    return redirect('accounts:main')
 
 class SignUpView(FormView):
     template_name = "accounts/signup.html"
@@ -29,9 +40,9 @@ class SignUpView(FormView):
 
     def form_valid(self, form):
         temp_user = form.save(commit=False)
-        password = self.request.POST['password']
-        temp_user.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
-        temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
+        # password = self.request.POST['password']
+        # temp_user.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
+        # temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
         weight = self.request.POST['weight']
         height = self.request.POST['height']
         activity = self.request.POST['activity']
@@ -42,7 +53,9 @@ class SignUpView(FormView):
         temp_user.save()
         user_id = form.cleaned_data.get("user_id")
         password = form.cleaned_data.get("password")
-        user = authenticate(self.request, user_id=user_id, password=password)
+        temp_user.password = make_password(password)
+        temp_user.save()
+        user = authenticate(user_id=user_id, password=password)
         if user is not None:
             login(self.request, user)
         return super().form_valid(form)
