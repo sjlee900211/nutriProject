@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 from . import forms
+from .models import User
 
 
 def main(request):
@@ -23,6 +24,9 @@ class LoginView(FormView):
         user_id = form.cleaned_data.get("user_id")
         password = form.cleaned_data.get("password")
         user = authenticate(self.request, user_id=user_id, password=password)
+        name = User.objects.get(user_id=user_id)
+        username = name.name
+        messages.info(self.request, "Welcome!")
         if user is not None:
             login(self.request, user)
         return super().form_valid(form)
@@ -31,7 +35,7 @@ class LoginView(FormView):
 def log_out(request):
     messages.info(request, "See you later")
     logout(request)
-    return redirect('accounts:main')
+    return redirect('accounts:login')
 
 class SignUpView(FormView):
     template_name = "accounts/signup.html"

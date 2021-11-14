@@ -6,9 +6,27 @@
 <body>
 
 {% include 'header.html' %}
+{% if messages %}
+    {% for msg in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" id="splash" role="alert">
+            <strong> {{ msg }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <script>
+            const splash = document.getElementById('splash');
+            const sDiv = splash.getElementsByTagName("div");
+            setTimeout(function () {
+                splash.remove();
+            }, 2500);
+
+
+        </script>
+    {% endfor %}
+{% endif %}
 {% block content %}
 {% endblock %}
 {% include 'footer.html' %}
 
 </body>
+
 </html>
