@@ -10,7 +10,9 @@
     padding: 0;
     font-family: "Open Sans", sans-serif;
 }
-
+a {
+    text-decoration:none
+}
 body {
     margin: 0 auto;
 }
@@ -43,4 +45,8 @@ footer.footer {
     font-size: 20px;
     animation: hideSplashScreen 0.5s ease-in-out forwards;
     animation-delay: 2s;
+}
+
+input {
+    border-radius: 10px;
 }

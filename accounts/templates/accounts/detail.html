@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <diV class="detail_form">
+        <h4>My Page</h4>
+        {% if target_user == user %}
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">User ID</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.user_id }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Name</label>
+                    <input class="form-control" id="disabledInput" type="password" placeholder="{{ target_user.name }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Height</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.height }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Weight</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.weight }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Age category</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.age_category }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Gender</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.gender }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Activity</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.activity }}" disabled="">
+                </fieldset>
+            </div>
+            <div class="detail">
+                <fieldset disabled="">
+                    <label class="form-label" for="disabledInput">Proper. Kcal</label>
+                    <input class="form-control" id="disabledInput" type="text" placeholder="{{ target_user.proper_cal }}" disabled="">
+                </fieldset>
+            </div>
+        {% endif %}
+        {% if target_user == user %}
+            <button class="btn btn-primary col-12 mt-4 mb-4">
+                <a class="text-white" style="text-decoration: none;" href="{% url 'accounts:update' pk=user.pk %}">CHANGE INFO</a>
+            </button>
+        {% endif %}
+
+
+
+
+    </div>
+
+{% endblock %}

@@ -37,10 +37,13 @@ class SignUpForm(forms.ModelForm):
                   "gender",
                   "activity")
         widgets = {
-            "user_id": forms.TextInput(attrs={"placeholder": "ID",'text': 'ID'}),
+            "user_id": forms.TextInput(attrs={"placeholder": "ID"}),
             "name": forms.TextInput(attrs={"placeholder": "이름"}),
             "height": forms.TextInput(attrs={"placeholder": "cm" }),
-            "weight": forms.TextInput(attrs={"placeholder": "kg"})
+            "weight": forms.TextInput(attrs={"placeholder": "kg"}),
+            "age_category": forms.Select(choices=models.User.AGE_CHOICES, attrs={'class': 'form-select'}),
+            "gender": forms.Select(choices=models.User.GENDER_CHOICES, attrs={'class': 'form-select'}),
+            "activity": forms.Select(choices=models.User.ACTIVITY_CHOISES, attrs={'class': 'form-select'}),
         }
 
     password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
@@ -53,6 +56,13 @@ class SignUpForm(forms.ModelForm):
         if password != password_check:
             self.add_error('password', '비밀번호가 일치하지 않습니다.')
             self.add_error('password_check', '비밀번호가 일치하지 않습니다.') # 이메일(아이디) 중복 체크
+
+class UserUpdateForm(SignUpForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+
+        self.fields['user_id'].disabled = True
+        self.fields['name'].disabled = True
 
 class UserChangeForm(forms.ModelForm):
     # 비밀번호 변경 폼

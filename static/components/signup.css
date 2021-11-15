@@ -1,9 +1,9 @@
-.signup-form, .login_form {
+.signup-form, .login_form, .detail_form, .update-form {
   display: flex;
   margin: 50px auto;
   padding: 0;
   flex-direction: column;
   width: 33%;
   height: 100%;
-
 }
+

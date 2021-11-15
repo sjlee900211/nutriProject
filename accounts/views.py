@@ -1,12 +1,12 @@
 
-from audioop import reverse
+from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.shortcuts import render, redirect
 # Create your views here.
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, DetailView, UpdateView
 from . import forms
 from .models import User
 
@@ -44,7 +44,6 @@ class SignUpView(FormView):
 
     def form_valid(self, form):
         temp_user = form.save(commit=False)
-        # password = self.request.POST['password']
         # temp_user.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
         # temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
         weight = self.request.POST['weight']
@@ -65,6 +64,42 @@ class SignUpView(FormView):
         return super().form_valid(form)
 
 
+class UserMyPageView(DetailView):
+    model = User
+    context_object_name = 'target_user'
+    template_name = 'accounts/detail.html'
+
+
+class UserUpdateView(UpdateView):
+    model = User
+    template_name = 'accounts/update.html'
+    context_object_name = 'target_user'
+    form_class = forms.UserUpdateForm
+
+
+    def form_valid(self, form):
+        temp_user = form.save(commit=False)
+        # temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
+        weight = self.request.POST['weight']
+        height = self.request.POST['height']
+        activity = self.request.POST['activity']
+        if self.request.POST['gender'] == 1:
+            temp_user.proper_cal = round((66.47 + (13.75 * float(weight)) + (5 * float(height)) - (6.76 * 30))*float(activity))
+        else:
+            temp_user.proper_cal = round((655.1 + (9.56 * float(weight)) + (1.85 * float(height)) - (4.68 * 30))*float(activity))
+        temp_user.save()
+        user_id = form.cleaned_data.get("user_id")
+        password = form.cleaned_data.get("password")
+        temp_user.password = make_password(password)
+        temp_user.save()
+        user = authenticate(user_id=user_id, password=password)
+        if user is not None:
+            login(self.request, user)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        messages.info(self.request, "Sucess!")
+        return reverse('accounts:detail', kwargs={'pk': self.object.pk})
     # def post(self,request):
     #     if request.method == "POST":
     #         parent_name = request.POST.get('post')
@@ -72,7 +107,7 @@ class SignUpView(FormView):
     #         node_parent = None
     #     if parent_name is not None:
     #         node_parent = Node.objects.get(name=parent_name)
-    
+
     #     Node.objects.create(parent=node_parent)
     # def form_valid(self, form):
     #     # age_category = form.data.get('age_category')
@@ -131,9 +166,9 @@ class SignUpView(FormView):
 
 
 
-        # if request.method == "POST":
-        #     temp = request.POST.get('n_code')
-        #     print(temp)
+    # if request.method == "POST":
+    #     temp = request.POST.get('n_code')
+    #     print(temp)
     #     try:
     #         data = json.loads(request.body)
     #         user_id = data['user_id']
