@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.hashers import check_password
 
 from . import models
@@ -36,9 +37,9 @@ class SignUpForm(forms.ModelForm):
                   "gender",
                   "activity")
         widgets = {
-            "user_id": forms.TextInput(attrs={"placeholder": "ID"}),
+            "user_id": forms.TextInput(attrs={"placeholder": "ID",'text': 'ID'}),
             "name": forms.TextInput(attrs={"placeholder": "이름"}),
-            "height": forms.TextInput(attrs={"placeholder": "cm"}),
+            "height": forms.TextInput(attrs={"placeholder": "cm" }),
             "weight": forms.TextInput(attrs={"placeholder": "kg"})
         }
 
@@ -53,3 +54,26 @@ class SignUpForm(forms.ModelForm):
             self.add_error('password', '비밀번호가 일치하지 않습니다.')
             self.add_error('password_check', '비밀번호가 일치하지 않습니다.') # 이메일(아이디) 중복 체크
 
+class UserChangeForm(forms.ModelForm):
+    # 비밀번호 변경 폼
+    password = ReadOnlyPasswordHashField(
+        label='Password(암호화)'
+    )
+
+    class Meta:
+        model = User
+        fields = ("user_id",
+                  "password",
+                  "name",
+                  "height",
+                  "weight",
+                  "age_category",
+                  "gender",
+                  "activity",
+                  "n_code",)
+
+    def clean_password(self):
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
+        return self.initial["password"]

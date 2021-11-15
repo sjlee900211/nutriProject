@@ -1,6 +1,9 @@
-.create-form {
+.signup-form, .login_form {
   display: flex;
-  margin: 0 auto;
+  margin: 50px auto;
+  padding: 0;
   flex-direction: column;
   width: 33%;
+  height: 100%;
+
 }
