@@ -75,6 +75,7 @@ fabric.properties
 
 data_settings.py
 
+my_venv/
 venv/
 .env
 .idea
