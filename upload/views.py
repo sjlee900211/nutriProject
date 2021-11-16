@@ -9,7 +9,8 @@ from django.views.generic import CreateView, DetailView
 
 from upload.forms import UserUploadForm
 from upload.models import Upload
-from accounts.models import User
+from accounts.models import User, Standard
+
 
 # def main(request):
 #     return render(request, 'upload/main.html')
@@ -24,7 +25,9 @@ class UploadView(CreateView):
 
     def form_valid(self, form):
         temp_upload = form.save(commit=False)
-        temp_upload.user = User.objects.get(user_id=self.request.user.user_id)
+        temp_upload.user = self.request.user
+        # temp_upload.n_code = User.objects.get(user_id=self.request.user.user_id).n_code
+        print(temp_upload.user.n_code)
         temp_upload.save()
         return super().form_valid(form)
 

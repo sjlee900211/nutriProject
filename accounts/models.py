@@ -163,7 +163,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     user_id = models.CharField(max_length=20, unique=True, null=False)
-    n_code = models.ForeignKey('Standard', on_delete=models.CASCADE, blank=True, null=True)
+    n_code = models.ForeignKey('Standard', on_delete=models.CASCADE, blank=True, null=True, db_column='n_code')
     name = models.CharField(max_length=50)
     height = models.FloatField(null=True)
     weight = models.FloatField(null=True)
@@ -177,6 +177,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     REQUIRED_FIELDS = ['name',]
     USERNAME_FIELD = 'user_id'
+
+
 
     def has_perm(self, perm, obj=None):
         return True
