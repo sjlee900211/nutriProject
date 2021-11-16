@@ -12,7 +12,7 @@
             <div class="img-container">
                 <div class="wrapper">
                     <div class="image">
-                        <img src="" alt="">
+                        <img src='' onerror="this.style.display='none'" alt='' />
                     </div>
                     <div class="content">
                         <div class="file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
@@ -21,7 +21,7 @@
                     <div id="img-cancle"><i class="fas fa-times"></i></div>
                     <div id="img-name">File name here</div>
                 </div>
-                {#                <input id="default-btn" type="file" hidden>#}
+                <!-- {#                <input id="default-btn" type="file" hidden>#} -->
                 <div class="form-group">
                     <input type="file" hidden name="image" accept="image/*" class="form-control-file" title="" required="" id="default-btn">
                     <button onclick ="defaultBtnActive()" id="custom-btn" class="btn btn-dark">Choose a file</button>
@@ -56,6 +56,7 @@
                     reader.onload = function () {
                         const result = reader.result;
                         img.src = result;
+                        img.style = ''
                         wrapper.classList.add("active");
                     }
                     imgCancle.addEventListener("click", function(){
@@ -71,7 +72,7 @@
                 }
             });
         </script>
-
+<!-- 
         {#        <script>#}
         {#            const imgName = document.querySelector('#img-name')#}
         {#            const wrapper = document.querySelector('.wrapper')#}
@@ -98,6 +99,6 @@
         {#                    imgName.textContent#}
         {#                }#}
         {#            });#}
-        {#        </script>#}
+        {#        </script>#} -->
     </section>
 {% endblock %}

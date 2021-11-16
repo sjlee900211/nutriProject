@@ -175,7 +175,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
 
     objects = UserManager()
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['name',]
     USERNAME_FIELD = 'user_id'
 
     def has_perm(self, perm, obj=None):
