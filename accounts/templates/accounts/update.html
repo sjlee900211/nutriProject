@@ -3,12 +3,14 @@
 {% block content %}
 
     <div class="update-form">
+
         <h4>Change Info</h4>
         <form action="{% url 'accounts:update' pk=target_user.pk %}" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
             <input type="submit" class="btn btn-primary col-12 mt-4 mb-4" value="SAVE">
         </form>
+
     </div>
 
 {% endblock %}

@@ -1,4 +1,6 @@
-
+import mixins.views
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
@@ -6,10 +8,13 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 # Create your views here.
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, FormView, DetailView, UpdateView
 from . import forms
+from .decorator import required
 from .models import User
 
+user_required = [login_required, required]
 
 def main(request):
     return render(request, 'accounts/main.html')
@@ -25,7 +30,6 @@ class LoginView(FormView):
         password = form.cleaned_data.get("password")
         user = authenticate(self.request, user_id=user_id, password=password)
         name = User.objects.get(user_id=user_id)
-        username = name.name
         messages.info(self.request, "Welcome!")
         if user is not None:
             login(self.request, user)
@@ -44,7 +48,6 @@ class SignUpView(FormView):
 
     def form_valid(self, form):
         temp_user = form.save(commit=False)
-        # temp_user.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
         # temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
         weight = self.request.POST['weight']
         height = self.request.POST['height']
@@ -63,13 +66,15 @@ class SignUpView(FormView):
             login(self.request, user)
         return super().form_valid(form)
 
-
+@method_decorator(required, 'get')
 class UserMyPageView(DetailView):
     model = User
     context_object_name = 'target_user'
     template_name = 'accounts/detail.html'
 
 
+@method_decorator(required, 'get')
+@method_decorator(required, 'post')
 class UserUpdateView(UpdateView):
     model = User
     template_name = 'accounts/update.html'
@@ -79,7 +84,6 @@ class UserUpdateView(UpdateView):
 
     def form_valid(self, form):
         temp_user = form.save(commit=False)
-        # temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
         weight = self.request.POST['weight']
         height = self.request.POST['height']
         activity = self.request.POST['activity']
@@ -87,7 +91,6 @@ class UserUpdateView(UpdateView):
             temp_user.proper_cal = round((66.47 + (13.75 * float(weight)) + (5 * float(height)) - (6.76 * 30))*float(activity))
         else:
             temp_user.proper_cal = round((655.1 + (9.56 * float(weight)) + (1.85 * float(height)) - (4.68 * 30))*float(activity))
-        temp_user.save()
         user_id = form.cleaned_data.get("user_id")
         password = form.cleaned_data.get("password")
         temp_user.password = make_password(password)
