@@ -79,5 +79,4 @@ venv/
 .env
 .idea
 __pycache__/
-
-static/food_img/
+food_img/
