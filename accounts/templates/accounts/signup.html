@@ -4,7 +4,7 @@
 
     <div class="signup-form">
         <h2>Sing Up</h2>
-        <form action="{% url 'accounts:signup' %}" method="post">
+        <form class="" action="{% url 'accounts:signup' %}" method="post">
             {% csrf_token %}
 {#            {% for i in form %}#}
             {% bootstrap_form form %}
