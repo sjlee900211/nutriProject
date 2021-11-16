@@ -12,24 +12,22 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, FormView, DetailView, UpdateView
 from . import forms
 from .decorator import required
-from .models import User
+from .models import User, Standard
 
 user_required = [login_required, required]
 
-def main(request):
-    return render(request, 'accounts/main.html')
+
 
 class LoginView(FormView):
 
     template_name = "accounts/login.html"
     form_class = forms.LoginForm
-    success_url = reverse_lazy("accounts:main")
+    success_url = reverse_lazy("upload:main")
 
     def form_valid(self, form):
         user_id = form.cleaned_data.get("user_id")
         password = form.cleaned_data.get("password")
         user = authenticate(self.request, user_id=user_id, password=password)
-        name = User.objects.get(user_id=user_id)
         messages.info(self.request, "Welcome!")
         if user is not None:
             login(self.request, user)
@@ -44,11 +42,11 @@ def log_out(request):
 class SignUpView(FormView):
     template_name = "accounts/signup.html"
     form_class = forms.SignUpForm
-    success_url = reverse_lazy("accounts:main")
+    success_url = reverse_lazy("upload:main")
 
     def form_valid(self, form):
         temp_user = form.save(commit=False)
-        # temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
+        temp_user.n_code = Standard.objects.get(gender=self.request.POST['gender'] , age_category=self.request.POST['age_category'])
         weight = self.request.POST['weight']
         height = self.request.POST['height']
         activity = self.request.POST['activity']

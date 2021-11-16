@@ -15,12 +15,12 @@ Including another URLconf
 """
 
 from django.urls import path, include
-
-from history.views import fiveGroup
+from upload.views import UploadView, UploadDetailView
 
 #해당 네임에서 url patterns에 있는 name의 url로 가주세요~!
-app_name = "history"
+app_name = "upload"
 
 urlpatterns = [
-    path('', fiveGroup, name='fiveGroup'), #history
+    path('', UploadView.as_view(), name='main'), #upload
+    path('detail/<int:pk>', UploadDetailView.as_view(), name='detail'),
 ]

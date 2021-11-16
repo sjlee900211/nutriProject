@@ -12,7 +12,7 @@ def required(func):
         print(kwargs['pk'])
         if not user == request.user:
             messages.info(request, "You can't go!")
-            return redirect('accounts:main')
+            return redirect('upload:main')
         return func(request,*args,**kwargs)
     return decorated
 

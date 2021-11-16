@@ -189,8 +189,33 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_superuser
 
     def __str__(self):
-        return f'{self.n_code, self.user_id, self.gender, self.proper_cal}'
+        return f'{self.user_id, self.name, self.n_code, self.proper_cal}'
 
+    class Meta:
+        db_table = 'users'
+
+# class Upload(models.Model):
+#
+#     BREAKFAST = '아침'
+#     LUNCH = '점심'
+#     DINNER = '저녁'
+#
+#     MEALTIME_CHOICE = (
+#         (BREAKFAST, '아침'),
+#         (LUNCH, '점심'),
+#         (DINNER, '저녁'),
+#     )
+#     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='upload_user', null=False, db_column='user_id')
+#     n_code = models.ForeignKey('User', on_delete=models.CASCADE, related_name='upload_code', blank=True, null=True)
+#     image = models.ImageField(upload_to=f'%Y/%m/{user}/', null=False)
+#     created_at = models.DateField(auto_now_add=True, null=True)
+#     mealtimes = models.FloatField(choices=MEALTIME_CHOICE, null=False)
+#
+#     def __str__(self):
+#         return f'{self.user, self.created_at, self.mealtimes}'
+#
+#     class Meta:
+#         db_table = 'user_upload_info'
     # def save(self, *args, **kwargs):
     #     gender = self.gender
     #     code = Standard.objects.get(gender=gender)
