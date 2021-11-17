@@ -80,4 +80,25 @@ venv/
 .env
 .idea
 __pycache__/
+<<<<<<< Updated upstream
 food_img/
+=======
+darkflow/
+static/food_img/
+>>>>>>> Stashed changes
+
+
+# YOLO Refer.
+migrations/
+darkflow/
+bin/
+build/
+cfg/
+darkflow.egg-info/
+five/
+flow
+sample_img/
+setup.py
+test/
+food_img/
+     

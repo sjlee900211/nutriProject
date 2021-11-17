@@ -36,12 +36,13 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django_elasticsearch_dsl',    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +53,13 @@ INSTALLED_APPS = [
     'upload',
     'bootstrap4',
 ]
+
+ELASTICSEARCH_DSL = {
+    'default':{
+        'hosts': '13.114.158.172.9200'
+    },
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,7 +132,25 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# Log
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {       
+        'logstash': {
+            'level': 'INFO',
+            'class': 'logstash.TCPLogstashHandler',
+            'host': 'localhost',
+            'port': 5959,  # Default value: 5959
+            'version': 1,
+        },
+    },
+    'loggers' : {
+        'django': {
+            'handlers': ['logstash'],   # 로그 레코드를 logstash handler로 전달
+        },
+    }
+}
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
