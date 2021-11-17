@@ -1,3 +1,4 @@
+from django.contrib.auth import mixins
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -7,6 +8,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView
 
+from upload.decorator import check_user
 from upload.forms import UserUploadForm
 from upload.models import Upload
 from accounts.models import User, Standard
@@ -18,6 +20,10 @@ from accounts.models import User, Standard
 #
 # @method_decorator(login_required, 'get')
 # @method_decorator(login_required, 'post')
+user_required = [login_required, check_user]
+
+
+@method_decorator(login_required, 'post')
 class UploadView(CreateView):
     model = Upload
     form_class = UserUploadForm
@@ -26,15 +32,16 @@ class UploadView(CreateView):
     def form_valid(self, form):
         temp_upload = form.save(commit=False)
         temp_upload.user = self.request.user
-        # temp_upload.n_code = User.objects.get(user_id=self.request.user.user_id).n_code
         print(temp_upload.user.n_code)
         temp_upload.save()
         return super().form_valid(form)
 
     def get_success_url(self):
+        print(self.object.pk, self.object.user)
         return reverse('upload:detail',kwargs={'pk':self.object.pk})
 
+@method_decorator(check_user, 'get')
 class UploadDetailView(DetailView):
     model = Upload
-    context_object_name = 'target_upload'
+    context_object_name = 'upload_result'
     template_name = 'upload/detail.html'

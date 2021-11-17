@@ -1,8 +1,41 @@
 {% extends 'base.html' %}
-
+{% load bootstrap4 %}
+{% load static %}
 {% block content %}
+    <!-- Section-->
+    <section>
+        <div class="main-text">
+            <h2 class="display-5 fw-bolder">{{ upload_result.created_at | date:"m월d일"}}</h2>
+            <h4 class="display-5"> {{ upload_result.mealtimes }} 식사 영양정보</h4>
+        </div>
+        <form action="{% url 'upload:detail' pk=upload_result.pk %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="img-container">
+                <div class="wrapper">
+                    <div class="image">
+                        <img src='{{ upload_result.image.url }}' alt='' />
+                    </div>
+                    <div id="img-name">File name here</div>
+                </div>
+                <!-- {#                <input id="default-btn" type="file" hidden>#} -->
+                <div class="form-group">
+                    <input type="file" hidden name="image" accept="image/*" class="form-control-file" title="" required="" id="default-btn">
+                    <button id="custom-btn" class="btn btn-dark">
+                        <a class="text-white" style="text-decoration: none;" href="{% url 'upload:main' %}">REPOST</a>
+                    </button>
+                </div>
 
-업로드 완료
 
-
+                <label for="exampleSelect1" class="form-label5" placeholder="Meal Times"></label>
+                <select name=mealtimes id="id_mealtimes" class="form-select" placeholder="Meal Times">
+                    <option value="" disabled selected hidden>How many servings did you eat? (General)</option>
+                    <option>0.5</option>
+                    <option>1.0</option>
+                    <option>1.5</option>
+                </select>
+                <input type="submit" class="btn btn-primary mt-8" id="custom-btn" value="upload">
+            </div>
+        </form>
+        <script src="{% static 'js/upload.js' %}"></script>
+    </section>
 {% endblock %}

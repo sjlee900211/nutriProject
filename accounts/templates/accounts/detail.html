@@ -54,9 +54,11 @@
             </div>
         {% endif %}
         {% if target_user == user %}
-            <button class="btn btn-primary col-12 mt-4 mb-4">
-                <a class="text-white" style="text-decoration: none;" href="{% url 'accounts:update' pk=user.pk %}">CHANGE INFO</a>
-            </button>
+            <div>
+                <button class="btn btn-primary mt-4 mb-4" id="custom-btn">
+                    <a class="text-white" style="text-decoration: none;" href="{% url 'accounts:update' pk=user.pk %}">CHANGE INFO</a>
+                </button>
+            </div>
         {% endif %}
 
 

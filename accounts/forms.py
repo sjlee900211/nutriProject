@@ -22,7 +22,7 @@ class LoginForm(forms.Form):
             else:
                 self.add_error("password", forms.ValidationError("Password is wrong"))
         except models.User.DoesNotExist:
-            self.add_error("email", forms.ValidationError("User does not exist"))
+            self.add_error("user_id", forms.ValidationError("User does not exist"))
 
 class SignUpForm(forms.ModelForm):
     class Meta:

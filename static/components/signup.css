@@ -1,4 +1,4 @@
-.signup-form, .login_form, .detail_form, .update-form {
+.signup-form, .login_form, .detail_form, .update-form, detail-form {
   display: flex;
   margin: 50px auto;
   padding: 0;

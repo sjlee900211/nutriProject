@@ -16,11 +16,11 @@ class Upload(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='upload_user', blank=True, null=True)
     image = models.ImageField(upload_to=upload_to_func, null=False, max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_at = models.DateField(auto_now_add=True, null=True)
     mealtimes = models.CharField(choices=MEALTIME_CHOICE, max_length=20)
 
     def __str__(self):
-        return self.n_code, self.user, self.created_at, self.mealtimes
+        return f'{self.user.user_id, self.user.n_code, self.created_at.date(), self.mealtimes}'
 
     class Meta:
         db_table = 'user_upload_info'

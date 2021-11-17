@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% load static %}
 {% block content %}
     <!-- Section-->
     <section>
@@ -28,50 +29,17 @@
                 </div>
 
 
-                <label for="exampleSelect1" class="form-label mt-4" placeholder="Meal Times"></label>
+                <label for="exampleSelect1" class="form-label5" placeholder="Meal Times"></label>
                 <select name=mealtimes required id="id_mealtimes" class="form-select" placeholder="Meal Times">
                     <option value="" disabled selected hidden>Meal Time</option>
                     <option>아침</option>
                     <option>점심</option>
                     <option>저녁</option>
                 </select>
-                <input type="submit" class="btn btn btn-primary col-12 mt-4 mb-4">
+                <input type="submit" class="btn btn-primary mt-8" id="custom-btn" value="CONFIRM">
             </div>
         </form>
-        <script>
-            const imgName = document.querySelector('#img-name')
-            const wrapper = document.querySelector('.wrapper')
-            const imgCancle = document.querySelector('#img-cancle')
-            const defaultBtn = document.querySelector('#default-btn')
-            const customtBtn = document.querySelector('#custom-btn')
-            const img = document.querySelector('img')
-            let deleteExp = /[0-9a-zA-Z\^\&\'\@\{\}\[\}\,\$\=\!\-\#\(\)\.\%\+\~\_]+$/;
-            function defaultBtnActive() {
-                defaultBtn.click();
-            }
-            defaultBtn.addEventListener("change",function (){
-                const file = this.files[0];
-                if (file){
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        const result = reader.result;
-                        img.src = result;
-                        img.style = ''
-                        wrapper.classList.add("active");
-                    }
-                    imgCancle.addEventListener("click", function(){
-                        img.src = "";
-                        wrapper.classList.remove("active");
-
-                    });
-                    reader.readAsDataURL(file)
-                }
-                if(this.value){
-                    let valueStore = this.value.match(deleteExp);
-                    imgName.textContent =valueStore;
-                }
-            });
-        </script>
+        <script src="{% static 'js/upload.js' %}"></script>
 <!-- 
         {#        <script>#}
         {#            const imgName = document.querySelector('#img-name')#}

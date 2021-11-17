@@ -13,12 +13,17 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <script>
-            const splash = document.getElementById('splash');
-            const sDiv = splash.getElementsByTagName("div");
-            setTimeout(function () {
-                splash.remove();
-            }, 2500);
+            // const splash = document.getElementById('splash');
+            // const sDiv = splash.getElementsByTagName("div");
+            // setTimeout(function () {
+            //    splash.slideUp();
+            // });
+            $( 'div.alert' ).show( function() {
+                $( 'strong' ).fadeOut(2500);
+                $( 'div.alert' ).slideUp(2000) && $( 'div.alert' ).hide(1800);;
 
+
+            } );
 
         </script>
     {% endfor %}
