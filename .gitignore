@@ -103,4 +103,5 @@ test/
 food_img/
      
 test.py
-settings.py
+nutrition/settings.py
+
