@@ -33,12 +33,14 @@ class UploadView(CreateView):
         temp_upload = form.save(commit=False)
         temp_upload.user = self.request.user
         print(temp_upload.user.n_code)
+        #yolo 함수 추가
         temp_upload.save()
         return super().form_valid(form)
 
     def get_success_url(self):
         print(self.object.pk, self.object.user)
         return reverse('upload:detail',kwargs={'pk':self.object.pk})
+        #이미지 및 class_list (음식명) return 추가
 
 @method_decorator(check_user, 'get')
 class UploadDetailView(DetailView):
