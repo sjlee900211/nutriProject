@@ -87,7 +87,6 @@ darkflow/
 static/food_img/
 >>>>>>> Stashed changes
 
-
 # YOLO Refer.
 migrations/
 darkflow/
@@ -103,5 +102,5 @@ test/
 food_img/
      
 test.py
-nutrition/settings.py
 
+nutrition/settings.py
