@@ -2,8 +2,7 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 
-from accounts.models import User
-from upload.models import Upload
+from .models import Upload
 
 
 # def check_user(func):

@@ -103,7 +103,7 @@ class UserManager(BaseUserManager):
         주어진 이메일, 닉네임, 비밀번호 등 개인정보로 User 인스턴스 생성
         """
         if not user_id:
-            raise ValueError(_('Users must have an user_id address'))
+            raise ValueError(('Users must have an user_id address'))
 
         user = self.model(
             user_id=user_id,
@@ -232,8 +232,29 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     self.proper_cal = 66.47+(13.75*weight)+(5*height)-(6.76*30)
     #     super().save(*args,**kwargs)
 
-    class Meta:
-        db_table = 'users'
+
+# # 대시 모델(단일용)
+# class StatelessApp(models.Model):
+#     '''
+#     A stateless Dash app.
+
+#     An instance of this model represents a dash app without any specific state
+#     '''
+
+#     app_name = models.CharField(max_length=100, blank=False, null=False, unique=True)
+#     # slug = models.SlugField(max_length=110, unique=True, blank=True)
+
+#     def __str__(self):
+#         return self.app_name
+    
+#     def as_dash_app(self):
+#         '''
+#         Return a DjangoDash instance of the dash application
+#         '''
+    
+
+    # class Meta:
+    #     db_table = 'users'
 
 
 

@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'upload',
+    'dashes',
     'bootstrap4',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
 ]
 
 ELASTICSEARCH_DSL = {
@@ -69,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_plotly_dash.middleware.BaseMiddleware',
+    'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
 ]
 
 ROOT_URLCONF = 'nutrition.urls'
@@ -91,6 +95,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'nutrition.wsgi.application'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

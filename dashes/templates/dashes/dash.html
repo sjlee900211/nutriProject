@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load plotly_dash %}
+{% block content %}
+
+
+
+<div class="{% plotly_class name="dash"%}">
+
+   {% plotly_app name="dash" ratio=1 %}
+
+</div>
+{% endblock %}

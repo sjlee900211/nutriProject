@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accoutns/', include('accounts.urls')),
+    path('accounts/', include('accounts.urls')),
     path('', include('upload.urls')), #upload
+    path('dashes/', include('dashes.urls')),
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

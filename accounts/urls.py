@@ -1,7 +1,7 @@
-
-from django.urls import path, include
-
+from django.urls import path, include, re_path
+from . import views
 from accounts.views import SignUpView, LoginView, log_out, UserMyPageView, UserUpdateView
+# from accounts.user_dash import Dash
 
 #해당 네임에서 url patterns에 있는 name의 url로 가주세요~!
 app_name = "accounts"
@@ -13,5 +13,6 @@ urlpatterns = [
 
     path('mypage/<int:pk>', UserMyPageView.as_view(), name='detail'),
     path('update/<int:pk>', UserUpdateView.as_view(), name="update"),
+    
 ]
 

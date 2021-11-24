@@ -1,4 +1,6 @@
-
+from django.http import HttpResponse
+# from accounts.user_dash import Dash
+# from . import user_dash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
@@ -13,6 +15,7 @@ from django.views.generic import CreateView, FormView, DetailView, UpdateView
 from . import forms
 from .decorator import required
 from .models import User, Standard
+
 
 user_required = [login_required, required]
 
@@ -99,8 +102,27 @@ class UserUpdateView(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        messages.info(self.request, "Sucess!")
+        messages.info(self.request, "Success!")
         return reverse('accounts:detail', kwargs={'pk': self.object.pk})
+    
+
+
+    
+# 대시앱 만들기
+# def dash(request):
+#     model = user_dash
+#     # messages.info(request, "History_page")
+#     # template_name = 'accounts/dash.html'
+#     # template_name = 'accounts/dash.html'
+#     return render(request, 'accounts/dash.html')
+
+
+    
+    # def dash(request):
+    #     messages.info(request, "History페이지")
+    #     # dash(request)
+    #     return redirect('accounts:dash')
+    
     # def post(self,request):
     #     if request.method == "POST":
     #         parent_name = request.POST.get('post')

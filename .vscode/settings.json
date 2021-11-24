@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\python.exe",
+    "python.autoComplete.extraPaths": [
+        "C:\\ProgramData\\Anaconda3\\python.exe"
+    ],
+    "python.analysis.extraPaths": [
+        "C:\\ProgramData\\Anaconda3\\python.exe"
+    ]
+}
