@@ -12,8 +12,8 @@ class Dash(models.Model):
 
     app = DjangoDash('dash')
 
-    conn = pymysql.connect(db='project', user='admin', passwd='1234',
-                        charset='utf8', port=3306, host='13.114.158.172')
+    conn = pymysql.connect(db='project', user='****', passwd='****',
+                        charset='utf8', port=3306, host='*************')
 
     # Parameter 받아와서 SELECT 쿼리에 넣어주기
     param1 = ''
