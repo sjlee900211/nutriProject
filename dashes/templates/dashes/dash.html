@@ -3,11 +3,17 @@
 {% load plotly_dash %}
 {% block content %}
 
-
-
+{% if user.is_authenticated %}
 <div class="{% plotly_class name="dash"%}">
 
    {% plotly_app name="dash" ratio=1 %}
-
 </div>
+
+{% else %}
+<script type="text/javascript">
+   alert('로그인을 해주세요.');
+   window.location.href = '{%url "login" %}';
+</script>
+{% endif %}
+
 {% endblock %}

@@ -1,10 +1,10 @@
 from .views import dash
 from django.urls import path, include
+from accounts.views import UserMyPageView
 
-
-#해당 네임에서 url patterns에 있는 name의 url로 가주세요~!
 app_name = "dashes"
 
 urlpatterns = [
+    # path('dash/<int:pk>', dash, name='dash'),
     path('dash/', dash, name='dash'),
 ]
