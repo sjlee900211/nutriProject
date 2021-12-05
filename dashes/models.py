@@ -1,97 +1,198 @@
 from django import db
 from django.db import models
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, MATCH, ALL, ALLSMALLER
 import dash_core_components as dcc
 import dash_html_components as html
+from dash import callback_context
 import pandas as pd
-from pandas._config.config import options
+from pandas._config.config import option_context, options
 import pymysql
 import plotly.graph_objs as go
 import plotly.express as px
 from django_plotly_dash import DjangoDash
 import numpy as np
+import dash
+from datetime import datetime, timedelta
+import json
 
+conn = pymysql.connect(db='project', user='admin', passwd='1234',
+                        charset='utf8', port=3306, host='13.114.158.172')
 class Dash(models.Model):
-
-    app = DjangoDash('dash')
     
-    conn = pymysql.connect(db='project', user='admin', passwd='1234',
-                        charset='utf8', port=3306, host='13.114.158.172')
-    # Parameter 받아와서 SELECT 쿼리에 넣어주기
-    param1 = ''
+    param1 = '20211130'
+    start = datetime.strptime(param1, "%Y%m%d")-timedelta(days=30)
+    end = datetime.strptime(param1, "%Y%m%d")
+    
+    # print(start,end)
     # 접속자가 누구인지 파라미터 받아오기
-    user = ''
-    df = pd.read_sql("SELECT FOOD_CODE, UPDATE_DT FROM food_bio WHERE 1=1 "+ param1, conn)
-    date = pd.read_sql_query("SELECT FOOD_CODE, UPDATE_DT FROM food_bio WHERE 1=1 "+ param1, conn)
-    app.title = user+'히스토리 대시'
+    user = 1
+    # Dropdown용 날짜용 쿼리
+    app = DjangoDash('dash')
+    app.layout = html.Div([
+        #쿼리용 데이터 숨기기
+        dcc.Input(
+            id='sql-query',
+            # value="SELECT count(mealtimes) AS cnt, created_at FROM user_upload_info WHERE user_id = {} AND DATE(created_at) BETWEEN {} AND {} GROUP BY created_at".format(user, start, end),
+            value="SELECT count(mealtimes) AS cnt, created_at FROM user_upload_info WHERE user_id = {} GROUP BY created_at".format(user),
+            style={'width': '100%',
+                   'display': 'none'},
+            type='text',
+            
+        ),
+        html.Button('Run Query', 
+                    id='run-query',
+                     style={'display': 'none'}
+                    ),
 
-    df_date = date[['UPDATE_DT']]
-    # print(df_date.head(5))
-    trace = go.Bar(x=df.FOOD_CODE, y=df.UPDATE_DT, name='food_bio')
-    
-    app.layout = html.Div(children=[html.H1("History_대시보드", style={'textAlign': 'center'}),
+        html.Hr(),
+
         html.Div([
-            # html.Label("Date"),
-            # 시작년월 선택
-            html.Div(
-                dcc.Dropdown( 
-                    id="date1",  
-                    placeholder="Select Start date",
-                    options=[{'label': i, 'value':i} for i in df_date.values],
-                    value = 'UPDATE_DT',
-                    # multi=True
-                ), 
-                style={'width':'50%',  'text-align':'center'},
-                
-                ),
-                
+            html.Div(id='table-container', className="four columns"),
 
-            # 종료년월 선택
-            html.Div(
-                dcc.Dropdown( 
-                    id="date2",
-                    placeholder="Select End date",
-                    options=[{'label': i, 'value':i} for i in df_date.values],
-                ),
-                style={'width':'50%',  'text-align':'center'}),
-                # # dropdown_select 표시(date1)
-                # dcc.Dropdown(id = 'date1_state', options=[], multi=True),
-        ], style={"width":"80%", "display":"inline-flex"}),  
-        # 로딩 표시------------------
-        html.Div(
-            dcc.Loading(
-                id="loading",
-                children=[html.Div(id="loading-output")],#, style={'color':'#aaa', 'display':'flex', 'flex-direction':'row-reverse', 'vertical-align': 'top'})],
-                type="circle")),
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Label('Start date'),
+                        dcc.Dropdown(
+                            id='dropdown-x',
+                            clearable=False,
+                            # multi = True,
+                            value="SELECT created_at FROM user_upload_info WHERE user_id = {} GROUP BY created_at".format(user)
+                        )
+                    ], className="six columns"),
+                    html.Div([
+                        html.Label('End date'),
+                        dcc.Dropdown(
+                            id='dropdown-y',
+                            clearable=False,
+                        )
+                    ], className="six columns")
+                ], className="row"),
+                html.Div(dcc.Graph(id='graph'), style={"width":"100%"}, className="ten columns")
+            ], className="eight columns")
+        ], className="row"),
 
-        html.Br(),                            
-        dcc.Graph(
-            id='line',
-            figure={
-                'data': [trace],
-                'layout':
-                go.Layout(title='', barmode='stack')
-            })
-    ], className="container")
+        # hidden store element
+        html.Div(id='table-store', style={'display': 'none'})
+    ])
 
-     # 날짜 선택--------------------------------------------------------------
+
     @app.callback(
-        Output('date1_state', 'options'), Input('date1', 'value'))
+        dash.dependencies.Output('table-store', 'children'),
+        [dash.dependencies.Input('run-query', 'n_clicks')],
+        state=[dash.dependencies.State('sql-query', 'value')])
     
-    def draw_chart(date1):
-        conn = pymysql.connect(db='project', user='admin', passwd='1234',
-                        charset='utf8', port=3306, host='13.114.158.172')
-        df = pd.DataFrame()
-        # 선택한 회사의 데이터를 dataframe으로 생성
-        pd.read_sql('SELECT FOOD_CODE, UPDATE_DT FROM food_bio WHERE UPDATE_DT = "{}" '.format(date1,conn))
-        # 그래프 그리기
-        fig = px.line(x=df.FOOD_CODE, y=df.UPDATE_DT, name='food_bio') 
-        fig.update_layout(
-            title = '',
-            yaxis={'tickformat':',d'}
+    def sql(number_of_times_button_has_been_clicked, sql_query):
+        dff = pd.read_sql_query(
+            sql_query,
+            conn
         )
-        return fig   
-    def as_dash_app(self):
-        return self.app
-
+        return dff.to_json()
     
+    # def x():
+    
+        # def create_options_x(selected_startdate):
+    #     dff = pd.read_json(selected_startdate)
+    #     date_x = pd.DatetimeIndex(dff['created_at']).strftime("%Y%m%d")
+    #     fig = px.line(dff, x=dff['dropdown-x'], y=dff['dropdown-y'])
+    #     return [{'label': i, 'value': i} for i in date_x]
+    
+    # @app.callback(
+    #     dash.dependencies.Output('graph', 'figure'),
+    #     [dash.dependencies.Input('table-store', 'children'),
+    #     dash.dependencies.Input('dropdown-x', 'value'),
+    #     dash.dependencies.Input('dropdown-y', 'value')])
+    @app.callback(
+        dash.dependencies.Output('graph', 'figure'),
+        [dash.dependencies.Input('table-store', 'children')])    
+    # def dff_to_table(dff_json, dropdown_x1, dropdown_x2):
+    def dff_to_table(dff_json, dropdown_x1):
+    # def dff_to_table(dff_json):
+        dff = pd.read_json(dff_json)
+        # x = pd.DatetimeIndex(dff['created_at']).strftime("%Y/%m/%d %H:%M")
+        # x = pd.DatetimeIndex(dff['created_at']).strftime("%Y%m%d")
+        y = dff['cnt']       
+        return {
+            'data': [{
+                'x': dff[dropdown_x1],
+                'y': y,
+                # 'x': x,
+                # 'y': y,
+                'type': 'line'
+            }],
+
+        }
+
+    # 날짜 선택-----------------------------------------------
+    # @app.callback(
+    #     dash.dependencies.Output('dropdown-x', 'options'),
+    #     [dash.dependencies.Input('table-store', 'children')])
+    # def create_options_x(selected_startdate):
+    #     dff = pd.read_json(selected_startdate)
+    #     date_x = pd.DatetimeIndex(dff['created_at']).strftime("%Y/%m/%d")
+    #     return [{'label': i, 'value': i} for i in date_x]        
+    @app.callback(
+        dash.dependencies.Output('dropdown-x', 'options'),
+        [dash.dependencies.Input('table-store', 'children')])
+    def create_options_x(dff_json):
+        dff = pd.read_json(dff_json)
+        date_x = pd.DatetimeIndex(dff['created_at']).strftime("%Y%m%d")
+        # seleted_x = (date_x['created_at']> dff_json) & (date_x['created_at']<= dff_json)
+        return [{'label': i, 'value': i} for i in date_x]
+
+
+    # @app.callback(
+    #     dash.dependencies.Output('dropdown-y', 'options'),
+    #     [dash.dependencies.Input('table-store', 'children')])
+    # def create_options_y(dff_json):
+    #     dff = pd.read_json(dff_json)
+    #     date_y = pd.DatetimeIndex(dff['created_at']).strftime("%Y%m%d")
+    #     return [{'label': i, 'value': i} for i in date_y]
+
+    # @app.callback(
+    #     dash.dependencies.Output('graph', 'figure'),
+    #     [dash.dependencies.Input('table-store', 'children'),
+    #     dash.dependencies.Input('dropdown-x', 'value'),
+    #     dash.dependencies.Input('dropdown-y', 'value')])
+   
+    # def update_chart(selected_startdate, selected_enddate):
+    #     ctx = dash.callback_context
+
+    #     if not ctx.triggered:
+    #         button_id = 'No clicks yet'
+    #     else:
+    #         button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    #     ctx_msg = json.dumps({
+    #         'states': ctx.states,
+    #         'triggered': ctx.triggered,
+    #         'inputs': ctx.inputs
+    #     }, indent=2)
+
+    #     return html.Div([
+    #         html.Table([
+    #             html.Tr([html.Th('Button 1'),
+    #                     html.Th('Button 2'),
+    #                     html.Th('Most Recent Click')]),
+    #             html.Tr([html.Td(selected_startdate or 0),
+    #                     html.Td(selected_enddate or 0),
+    #                     html.Td(button_id)])
+    #         ]),
+    #         html.Pre(ctx_msg)
+    #     ])    
+        # triggered_id = callback_context.triggered[0]['prop_id']
+                    
+        # dff = pd.read_json(selected_startdate, selected_enddate)   
+        # return {
+        #     'data': [{
+        #         'x': dff[selected_startdate],
+        #         'y': dff[selected_enddate],
+        #         'type': 'line'
+        #     }],
+
+        # }
+
+    app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
+    
+    def as_dash_app(self):
+        return self.app    
